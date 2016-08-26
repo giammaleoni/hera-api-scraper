@@ -1,0 +1,20 @@
+{
+  "name": "hera-bot",
+  "version": "1.0.0",
+  "description": "Telegram Bot per Strade Pulite Hera",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scraping"
+  ],
+  "author": "Gianmaria Leoni",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "latest",
+    "express": "latest",
+    "node-telegram-bot-api": "^0.23.3",
+    "request": "latest"
+  }
+}
