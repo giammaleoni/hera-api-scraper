@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "Telegram Bot per Strade Pulite Hera",
   "main": "server.js",
+  "engines": {
+    "node": "5.9.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [
     "scraping"
@@ -16,5 +20,9 @@
     "express": "latest",
     "node-telegram-bot-api": "^0.23.3",
     "request": "latest"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giammaleoni/hera-bot"
+  },
 }
