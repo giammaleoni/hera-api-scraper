@@ -1,3 +1,5 @@
+// TODO - WIP -- ON GOING
+
 var TelegramBot = require('node-telegram-bot-api');
 
 //bot-name: HeraBoBot
@@ -5,6 +7,9 @@ var token = "258085660:AAGIOy5jnMewJ3z1CtuYtZ3MS4Tu9L5A0U8"
 
 // Setup polling way
 var bot = new TelegramBot(token, {polling: true});
+var url = "https://hera-bot.herokuapp.com/"
+
+bot.setWebHook(url, crt)
 
 bot.getMe().then(function (me) {
   console.log('Hi my name is %s!', me.username);
