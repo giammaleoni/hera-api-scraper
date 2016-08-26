@@ -1,4 +1,4 @@
-# Scraper example with nodeJS
+# Scraper example with nodeJS on [Hera website](http://www.gruppohera.it/statico/bologna/db_pulizia_strade.php)
 
 ## Installation
 1. Download or clone the rep
@@ -6,16 +6,33 @@
 
 ## Using
 1. Run `npm start`
-2. Open your browser: http://localhost:8080/via/:id?pretty=1&file=1 where `id` represent the identification number given to the "via" by Hera
-3. Go to your CLI and check ok message
-4. A new file named `output.json` should be created in your project folder with this content
+2. Open your browser: `http://localhost:8080/via/:id?pretty=1&file=1` where `id` represent the identification number given to the "via" by Hera
 ```
+  //Example call
+  // id:     786
+  // pretty: true
 
+  http://localhost:8080/via/786?pretty=1
+```
+3. Go to your CLI and check ok message
+4. If parameter `file` has been set to `1` a new file named `output.json` should be created  in your project folder with this content
+
+### Response example calling `http://localhost:8080/via/786?pretty=1`
+```
+{
+    "via": "ACRI (VIA)",
+    "data": [
+        "Il terzo Mercoledì del mese da Largo Trombetti a via dei Bibiena"
+    ]
+}
 ```
 
 ### Extra parameters
-pretty: prettify json
-file: write file output.json
+- pretty [optional - default: false]: prettify json
+- file [optional - default: false]: write file output.json
+
+## Working example on Heroku
+https://hera-bot.herokuapp.com/via/786?pretty=1
 
 ## A NOTE ON WEB SCRAPING
 Web scraping falls within a gray area of the law. Scraping data for personal use within limits is generally ok but you should always get permission from the website owner before doing so. This example here is very minimalistic in a sense (one request to Hera) so that it does not interfere with Hera’s operations. <strong>Please scrape responsibly.</strong>
