@@ -17,7 +17,7 @@
 3. Go to your CLI and check ok message
 4. If parameter `file` has been set to `1` a new file named `output.json` should be created  in your project folder with this content
 
-### Response example calling `http://localhost:8080/via/786?pretty=1`
+### Response example calling `http://localhost:8080/id/786?pretty=1`
 ```
 {
     "via": "ACRI (VIA)",
@@ -32,7 +32,7 @@
 - file [optional - default: false]: write file output.json
 
 ## Working example on Heroku
-https://hera-bot.herokuapp.com/via/786?pretty=1
+https://hera-bot.herokuapp.com/id/786?pretty=1
 
 ## A NOTE ON WEB SCRAPING
 Web scraping falls within a gray area of the law. Scraping data for personal use within limits is generally ok but you should always get permission from the website owner before doing so. This example here is very minimalistic in a sense (one request to Hera) so that it does not interfere with Hera’s operations. <strong>Please scrape responsibly.</strong>

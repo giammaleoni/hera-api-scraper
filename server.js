@@ -9,6 +9,10 @@ var url = 'http://www.gruppohera.it/statico/bologna/db_pulizia_strade.php';
 
 app.set('port', (process.env.PORT || 5000));
 
+app.get('/', function(req, res){
+  res.send("<ul><li><a href='http://localhost:5000/schema?pretty=1'>Schema</a></li><li><a href='http://localhost:5000/id/786?pretty=1'>Esempio via 786</a></li><li><a href='http://localhost:5000/id/?all=1'>All</a></li></ul>");
+})
+
 //get schema
 app.get('/schema', function(req, res){
 
@@ -48,7 +52,7 @@ app.get('/schema', function(req, res){
 })
 
 //get by id
-app.get('/via/:id', function(req, res){
+app.get('/id/:id', function(req, res){
 
   if (req.params.id) {
     url += '?via=' + req.params.id;
