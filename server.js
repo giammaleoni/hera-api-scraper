@@ -35,6 +35,8 @@ app.get('/schema', function(req, res){
       })
 
       output = req.query.pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json);
+    } else {
+      output = {"error": error}
     }
 
     // Print file
@@ -83,6 +85,8 @@ app.get('/id/:id', function(req, res){
 
       output = req.query.pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json);
 
+    } else {
+      output = {"error": error}
     }
 
     // Print file
