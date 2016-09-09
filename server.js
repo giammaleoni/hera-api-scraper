@@ -3,6 +3,8 @@ var fs      = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
 var app     = express();
+var path    = require('path');
+var marked = require('marked');
 
 var output;
 var url = 'http://www.gruppohera.it/statico/bologna/db_pulizia_strade.php';
@@ -10,7 +12,12 @@ var url = 'http://www.gruppohera.it/statico/bologna/db_pulizia_strade.php';
 app.set('port', (process.env.PORT || 5000));
 
 app.get('/', function(req, res){
-  res.send("<ul><li><a href='http://localhost:5000/schema?pretty=1'>Schema</a></li><li><a href='http://localhost:5000/id/786?pretty=1'>Esempio via 786</a></li><li><a href='http://localhost:5000/id/?all=1'>All</a></li></ul>");
+  //res.sendFile(path.join(__dirname, 'menu.html'));
+  fs.readFile(path.join(__dirname, 'README.md'), 'utf8', (err, data) => {
+    if (err) throw err;
+      console.log(data);
+      res.send(marked(data));
+    });
 })
 
 //get schema
@@ -18,7 +25,7 @@ app.get('/schema', function(req, res){
 
   request(url, function(error, response, html){
     if(!error){
-      var json =[];
+      var json = [];
       var $ = cheerio.load(html);
 
       $("select#via").filter(function(){
@@ -34,40 +41,97 @@ app.get('/schema', function(req, res){
         });
       })
 
-      output = req.query.pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json);
     } else {
-      output = {"error": error}
+      json = {"error": error}
+      // Return message to browser
+      res.setHeader('Content-Type', 'application/json');
+      res.send(output);
     }
 
-    // Print file
-    if (req.query.file) {
-      fs.writeFile('output.json', output, function(err){
-        console.log('File successfully written! - Check your project directory for the output.json file');
-      })
-    }
-
-    // Return message to browser
-    res.setHeader('Content-Type', 'application/json');
-    res.send(output);
+    print_and_send(res, json, req.query.pretty, req.query.file);
   })
-
 })
 
 //get by id
 app.get('/id/:id', function(req, res){
+  requestById(res, req, req.params.id);
+})
 
-  if (req.params.id) {
-    url += '?via=' + req.params.id;
-  }
-
-  //?pretty=1 or ?pretty=true --> pretty json
-  //?file=1   or ?file=true     --> file output
+//get by name
+app.get('/name/:name', function(req, res){
 
   request(url, function(error, response, html){
     if(!error){
-      var json = {via: "", data: []};
+      var schema = [];
       var $ = cheerio.load(html);
-      json = {via: "", data: []};
+
+      $("select#via").filter(function(){
+        $(this).children().slice(1).each(function(){
+
+          id = $(this).attr("value");
+          via = $(this).text().trim();
+
+          schema.push({
+            id: id,
+            via: via,
+          });
+        });
+      });
+
+      target = req.params.name.toUpperCase()
+
+      for (var i = 0; i < schema.length; i++) {
+        if (schema[i].via.indexOf(target) !== -1) {
+          var json = {id: schema[i].id, via: schema[i].via};
+          break;
+        }
+      }
+      if (json) {
+        requestById(res, req, json.id);
+      }else {
+        error("Via non trovata")
+      }
+
+    } else {
+      error(error);
+    }
+  })
+})
+
+// app.listen('8080')
+// console.log('Magic happens on port 8080: Open http://localhost:8080/via/786 in your browser');
+// exports = module.exports = app;
+
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'), '. Open browser in http://localhost:5000');
+})
+
+function print_and_send(res, output, pretty, file){
+
+  //pretty or not
+  output = pretty ? JSON.stringify(output, null, 4) : JSON.stringify(output);
+
+  // Print file
+  if (file) {
+    fs.writeFile('output.json', output, function(err){
+      console.log('File successfully written! - Check your project directory for the output.json file');
+    })
+  }
+
+  // Return message to browser
+  res.setHeader('Content-Type', 'application/json');
+  res.send(output);
+}
+
+function requestById(res, req, id) {
+
+  this_url = url + '?via=' + id;
+
+  request(this_url, function(error, response, html){
+    if(!error){
+
+      var $ = cheerio.load(html);
+      var json = {via: "", data: []};
 
       $(".selezionato").filter(function(){
         var data = $(this).children().first();
@@ -83,30 +147,18 @@ app.get('/id/:id', function(req, res){
         })
       })
 
-      output = req.query.pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json);
-
     } else {
-      output = {"error": error}
+      error(error);
     }
 
-    // Print file
-    if (req.query.file) {
-      fs.writeFile('output.json', output, function(err){
-        console.log('File successfully written! - Check your project directory for the output.json file');
-      })
-    }
-
-    // Return message to browser
-    res.setHeader('Content-Type', 'application/json');
-    res.send(output);
+    print_and_send(res, json, req.query.pretty, req.query.file);
 
   })
-})
+}
 
-// app.listen('8080')
-// console.log('Magic happens on port 8080: Open http://localhost:8080/via/786 in your browser');
-// exports = module.exports = app;
-
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'), '. Open browser in http://localhost:5000');
-})
+function error() {
+  json = {"error": error}
+  // Return message to browser
+  res.setHeader('Content-Type', 'application/json');
+  res.send(output);
+}

@@ -18,6 +18,7 @@
   "dependencies": {
     "cheerio": "latest",
     "express": "latest",
+    "marked": "^0.3.6",
     "request": "latest"
   },
   "repository": {
